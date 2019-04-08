@@ -2,18 +2,44 @@
 #define F_CPU 1000000UL
 #endif
 
+#include "display.h"
+#include "keyboard.h"
 #include "atmega8a_i2c_lcd1602.h"
+#include "custom_char.h"
+int main() {
+	DDRB = 0xFF;
+	PORTB = 0x3c;
+	DDRC = 0x00;
+	PORTC = 0x0F;
+	DDRD = 0xFF;
 
-int main(void) {
 	I2C_LCD1602_Init();
 
-	I2C_LCD1602_WriteNewChar(0x7e);
-	I2C_LCD1602_WriteChar(1, 0, 0xfb);
-	I2C_LCD1602_WriteString(0, 2, "Welcome to USTC");
-	I2C_LCD1602_WriteString(1, 2, "2018.7");
-
+	BYTE char0[] = {
+		OxOOO,
+		OOxOO,
+		OOOxO,
+		OOxOO,
+		OOOxO,
+		OOOOx,
+		OOOxO,
+		OOxOO
+	};
+	BYTE char1[] = {
+		OOOOO,
+		OxOxO,
+		xxxxx,
+		xxxxx,
+		OxxxO,
+		OOxOO,
+		OOOOO,
+		OOOOO
+	};
+	I2C_LCD_1602CreateChar(0, char0);
+	I2C_LCD_1602CreateChar(1, char1);
+	I2C_LCD1602_WriteChar(0, 0, (char)0);
+	I2C_LCD1602_WriteChar(0, 1, (char)1);
 	while (1) {
 		_delay_ms(1000);
-		I2C_LCD_WR8bits(LCD_CUR_DIS_SHIFT | LCD_DIS_SHIFT2LEFT_CUR, 0);
 	}
 }
