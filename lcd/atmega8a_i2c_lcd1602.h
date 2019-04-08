@@ -1,6 +1,8 @@
 #include "atmega8a_i2c_pcf8574t.h"
 #include <util/delay.h>
 
+#include "display.h"
+
 #ifndef F_CPU
 #define F_CPU 1000000UL
 #endif
@@ -8,8 +10,6 @@
 #ifndef BYTE
 #define BYTE unsigned char
 #endif
-
-//SEX, DEX
 
 #ifndef I2C_LCD1602_H
 #define I2C_LCD1602_H
@@ -20,7 +20,7 @@
 #define LCD_DISPLAYONOFF 0x08
 #define LCD_CUR_DIS_SHIFT 0x10
 #define LCD_FUNCTIONSET 0x20
-#define LCD_SETCGRAMADDR 0x48
+#define LCD_SETCGRAMADDR 0x40
 #define LCD_SETDDRAMADDR 0x80
 
 #define ENTRY_DISPLAYNOSHIFT 0x00
@@ -39,7 +39,7 @@
 #define LCD_CUR_SHIFT2RIGHT 0x04
 
 #define LCD_DIS_SHIFT2LEFT_CUR 0x08
-#define LCD_DIS_SHIFT2RIGHT_CUR 0x0c
+#define LCD_DIS_SHIFT2RIGHT_CUR 0x0C
 
 #define LCD_4BITMODE 0x00
 #define LCD_8BITMODE 0x10
@@ -52,7 +52,7 @@
 #define LCD_BACKLIGHTON 0x08
 #define LCD_RS 0x01
 #define LCD_RW 0x02
-#define LCD_E 0x04
+#define LCD_EN 0x04
 
 #define I2C_SLAVE_ADDRESS 0x27
 BYTE lcd_backlight = LCD_BACKLIGHTON;
@@ -63,9 +63,9 @@ BYTE WritePCF8574(BYTE data) {
 void I2C_LCD1602_WR4bits(BYTE value) {
 	WritePCF8574(value);
 	_delay_us(1);
-	WritePCF8574(value | LCD_E);
+	WritePCF8574(value | LCD_EN);
 	_delay_us(1);
-	WritePCF8574(value & ~LCD_E);
+	WritePCF8574(value & ~LCD_EN);
 	_delay_us(50);
 }
 void I2C_LCD_WR8bits(BYTE value, BYTE mode) {
@@ -124,4 +124,13 @@ void I2C_LCD1602_WriteString(BYTE row, BYTE col, const char* pString) {
 		pString++;
 	}
 }
+
+void I2C_LCD_1602CreateChar(BYTE loc, BYTE charmap[]) {
+	loc &= 0x7;
+	I2C_LCD_WR8bits(LCD_SETCGRAMADDR | (loc << 3), 0);
+	for (BYTE i = 0; i < 8; i++) {
+		I2C_LCD_WR8bits(charmap[i], 1);
+	}
+}
+
 #endif // I2C_LCD1602_H
