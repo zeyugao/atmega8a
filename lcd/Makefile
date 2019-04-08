@@ -11,4 +11,4 @@ main.hex: main.elf
 	$(QUOTE)D:\Program\mingw\avr8-gnu-toolchain-win32_x86\bin\avr-objcopy.exe$(QUOTE) -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "main.elf" "main.hex"
 
 clean:
-	del "main.elf" "main.hex" "main.o"
+	del /q *.elf *.hex *.o
