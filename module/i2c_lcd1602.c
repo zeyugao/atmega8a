@@ -1,16 +1,7 @@
-#ifndef I2C_LCD1602_H
-#define I2C_LCD1602_H
-
-#ifndef F_CPU
-#define F_CPU 1000000UL
-#endif
-
-#ifndef BYTE
-#define BYTE unsigned char
-#endif
+#include "i2c_lcd1602.h"
 
 #include <util/delay.h>
-#include "atmega8a_i2c_pcf8574t.h"
+#include "i2c_pcf8574t.h"
 
 #define LCD_CLEARDISPLAY 0x01
 #define LCD_RETURNHOME 0x02
@@ -123,7 +114,7 @@ void I2C_LCD1602_WriteString(BYTE row, BYTE col, const char* pString) {
 	}
 }
 
-void I2C_LCD_1602CreateChar(BYTE loc, BYTE charmap[]) {
+void I2C_LCD1602CreateChar(BYTE loc, BYTE charmap[]) {
 	loc &= 0x7;
 	I2C_LCD_WR8bits(LCD_SETCGRAMADDR | (loc << 3), 0);
 	for (BYTE i = 0; i < 8; i++) {
@@ -131,4 +122,15 @@ void I2C_LCD_1602CreateChar(BYTE loc, BYTE charmap[]) {
 	}
 }
 
-#endif // I2C_LCD1602_H
+void I2C_LCD1602_ClearLine(BYTE line) {
+	I2C_LCD1602_SetCursor(line, 0);
+	for (unsigned char i = 0; i < 40; i++) {
+		I2C_LCD_WR8bits(' ', 1);
+	}
+	I2C_LCD1602_SetCursor(line, 0);
+}
+
+void I2C_LCD1602_ClearAll() {
+	I2C_LCD1602_ClearLine(0);
+	I2C_LCD1602_ClearLine(1);
+}

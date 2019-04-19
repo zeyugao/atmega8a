@@ -1,13 +1,9 @@
-#ifndef atmega8a_i2c_pcf8574t_h
-#define atmega8a_i2c_pcf8574t_h
+
+#include "i2c_pcf8574t.h"
 
 #include <avr/io.h>
 #ifndef BUILD
 #include <avr/iom8a.h>
-#endif
-
-#ifndef BYTE
-#define BYTE unsigned char
 #endif
 
 #define I2C_START 0x08
@@ -66,5 +62,3 @@ BYTE I2C_WRITE_PCF8574(BYTE sla_addr, BYTE bdata) {
 	I2C_Stop();
 	return 0;
 }
-
-#endif // atmega8a_i2c_pcf8574t_h
