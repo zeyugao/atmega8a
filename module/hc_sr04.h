@@ -12,30 +12,30 @@
 
 unsigned int ReadHCSR4() {
 	unsigned int distance = 0;
-	BYTE tmp_DDRC;
-	tmp_DDRC = DDRC;
+	BYTE tmp_DDRB;
+	tmp_DDRB = DDRB;
 	cli();
 
-	DDRC = (1 << 1);
-	PORTC |= (1 << PORTC1);
+	DDRB = (1 << 1);
+	PORTB |= (1 << PORTB6);
 	_delay_us(20);
-	PORTC &= !(1 << PORTC1);
+	PORTB &= !(1 << PORTB6);
 
 	TCCR1B = 0x00;
 	TCNT1 = 0x00;
 	TCCR1A = 0x00;
-	while (!(PINC & 0x01))
+	while (!(PINB & (1<<PORTB7)))
 		;
-    TCCR1B = 0x01;
-	while (PINC & 0x01)
+	TCCR1B = 0x01;
+	while (PINB & (1<<PORTB7))
 		;
 
 	TCCR1B = 0x00;	
-    distance = TCNT1;
+	distance = TCNT1;
 
 	sei();
-	DDRC = tmp_DDRC;
-	distance = distance * 17 / 100;
+	DDRB = tmp_DDRB;
+	distance = distance / 100 * 17;
 	return distance;
 }
 
