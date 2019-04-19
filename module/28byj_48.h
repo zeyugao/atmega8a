@@ -17,6 +17,10 @@ const BYTE stepper_ph[3][8] = { { 0x01, 0x03, 0x02, 0x66, 0x04, 0x0C, 0x08, 0x09
 	{ 0x03, 0x06, 0x0C, 0x09 },
 	{ 0x01, 0x02, 0x04, 0x08 } };
 
+void enable_stepper() {
+	DDRD = 0x0f;
+}
+
 BYTE stepper_index = 0;
 void run_stepper(BYTE phase, BYTE dir, unsigned int step) {
 	BYTE ph = phase ? 0x03 : 0x07;
@@ -25,7 +29,7 @@ void run_stepper(BYTE phase, BYTE dir, unsigned int step) {
 	for (i = 0; i < step; i++) {
 		stepper_index += inc;
 		stepper_index &= ph;
-		PORTC = stepper_ph[phase][stepper_index];
+		PORTD = stepper_ph[phase][stepper_index];
 		switch (phase) {
 			case 0:
 				_delay_us(900);
