@@ -2,10 +2,10 @@
 #define F_CPU 1000000UL
 #endif
 
-#include "display.h"
-#include "keyboard.h"
-#include "atmega8a_i2c_lcd1602.h"
-#include "custom_char.h"
+#include "../module/display.h"
+#include "../module/keyboard.h"
+#include "../module/atmega8a_i2c_lcd1602.h"
+#include "../module/custom_char.h"
 int main() {
 	DDRB = 0xFF;
 	PORTB = 0x3c;

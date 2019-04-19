@@ -45,7 +45,12 @@ unsigned char display_line_table[] = {
 	DIS_LINE_1, DIS_LINE_2, DIS_LINE_3, DIS_LINE_4
 };
 
-inline static void display(int num, int decimal) {
+inline void enable_displayer() {
+	DDRB = DIS_LINE_1 | DIS_LINE_2 | DIS_LINE_3 | DIS_LINE_4;
+	DDRD = 0xFF;
+}
+
+inline static void display(unsigned int num, int decimal) {
 	decimal = decimal > 16 ? 16 : decimal;
 	decimal = decimal < 2 ? 2 : decimal;
 	char i = 3;

@@ -1,18 +1,11 @@
-/*
- * exp5_dht11_lcd1602.c
- *
- * Created: 2019/4/12 18:07:32
- * Author :
- */
-
 #ifndef F_CPU
 #define F_CPU 1000000L
 #endif
 
 #include <avr/io.h>
-#include "atmega8a_i2c_lcd1602.h"
-#include "dht11.h"
-#include "display.h"
+#include "../module/atmega8a_i2c_lcd1602.h"
+#include "../module/dht11.h"
+#include "../module/display.h"
 
 int main() {
 	BYTE toggle = 0;

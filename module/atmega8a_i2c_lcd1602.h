@@ -1,7 +1,5 @@
-#include "atmega8a_i2c_pcf8574t.h"
-#include <util/delay.h>
-
-#include "display.h"
+#ifndef I2C_LCD1602_H
+#define I2C_LCD1602_H
 
 #ifndef F_CPU
 #define F_CPU 1000000UL
@@ -11,8 +9,8 @@
 #define BYTE unsigned char
 #endif
 
-#ifndef I2C_LCD1602_H
-#define I2C_LCD1602_H
+#include <util/delay.h>
+#include "atmega8a_i2c_pcf8574t.h"
 
 #define LCD_CLEARDISPLAY 0x01
 #define LCD_RETURNHOME 0x02

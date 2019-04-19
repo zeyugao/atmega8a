@@ -1,12 +1,10 @@
-
+#ifndef atmega8a_i2c_pcf8574t_h
+#define atmega8a_i2c_pcf8574t_h
 
 #include <avr/io.h>
 #ifndef BUILD
 #include <avr/iom8a.h>
 #endif
-
-#ifndef atmega8a_i2c_pcf8574t_h
-#define atmega8a_i2c_pcf8574t_h
 
 #ifndef BYTE
 #define BYTE unsigned char
