@@ -102,7 +102,7 @@ void I2C_LCD1602_WriteNewChar(char value) {
 	I2C_LCD_WR8bits(value, 1);
 }
 
-inline void I2C_LCD1602_WriteChar(BYTE row, BYTE col, char value) {
+void I2C_LCD1602_WriteChar(BYTE row, BYTE col, char value) {
 	I2C_LCD1602_SetCursor(row, col);
 	I2C_LCD_WR8bits(value, 1);
 }
@@ -114,7 +114,7 @@ void I2C_LCD1602_WriteString(BYTE row, BYTE col, const char* pString) {
 	}
 }
 
-void I2C_LCD1602CreateChar(BYTE loc, BYTE charmap[]) {
+void I2C_LCD1602_CreateChar(BYTE loc, BYTE charmap[]) {
 	loc &= 0x7;
 	I2C_LCD_WR8bits(LCD_SETCGRAMADDR | (loc << 3), 0);
 	for (BYTE i = 0; i < 8; i++) {

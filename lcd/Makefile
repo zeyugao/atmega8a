@@ -1,14 +1,17 @@
 
-all: clean main.hex
+C_SOURCES := 
 
-main.o:
-	$(QUOTE)D:\Program\mingw\avr8-gnu-toolchain-win32_x86\bin\avr-gcc.exe$(QUOTE) -O2 -DBUILD -mmcu=atmega8 -c main.c
+C_SOURCES += \
+./main.c \
+../module/custom_char.c \
+../module/i2c_pcf8574t.c \
+../module/i2c_lcd1602.c
 
-main.elf: main.o
-	$(QUOTE)D:\Program\mingw\avr8-gnu-toolchain-win32_x86\bin\avr-gcc.exe$(QUOTE) -mmcu=atmega8 -o main.elf main.o
+all: clean program.hex
 
-main.hex: main.elf
-	$(QUOTE)D:\Program\mingw\avr8-gnu-toolchain-win32_x86\bin\avr-objcopy.exe$(QUOTE) -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "main.elf" "main.hex"
+program.hex: $(C_SOURCES)
+	$(QUOTE)D:\Program\mingw\avr8-gnu-toolchain-win32_x86\bin\avr-gcc.exe$(QUOTE) -O2 -mmcu=atmega8 -DBUILD -o program.elf $(C_SOURCES)
+	$(QUOTE)D:\Program\mingw\avr8-gnu-toolchain-win32_x86\bin\avr-objcopy.exe$(QUOTE) -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "program.elf" "program.hex"	
 
 clean:
 	del /q *.elf *.hex *.o
