@@ -16,7 +16,6 @@ int main() {
 
 	video_frame_len /= 64;
 	while (1) {
-		I2C_LCD1602_WriteString(1, 10, "123");
 		for (int i = 0; i < video_frame_len; i++) {
 			const unsigned char *ptr = (const unsigned char *)&video_context[i];
 
@@ -30,7 +29,7 @@ int main() {
 					I2C_LCD1602_WriteChar(r, c, r * 4 + c);
 				}
 			}
-			_delay_ms(250);
+			_delay_ms(405);
 		}
 	}
 	return 0;

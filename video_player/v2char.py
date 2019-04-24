@@ -84,12 +84,15 @@ class V2Char(CharFrame):
         nf = int(cap.get(7))
         print('Generate char video, please wait...')
         # for i in pyprind.prog_bar(range(nf)):
+        c = 0
         for i in range(nf):
             rawFrame = cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2GRAY)
             frame = self.convert(rawFrame, os.get_terminal_size(), fill=True)
-            if i % 15 ==0:
+            if i % 15 == 0:
+                c += 1
+                print(c)
                 self.charVideo.append(frame)
-            if i > nf /5:
+            if i > nf/4:
                 break
         cap.release()
 
