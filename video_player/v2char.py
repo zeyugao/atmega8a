@@ -10,7 +10,7 @@ os.get_terminal_size = lambda: (20, 16)
 
 class CharFrame:
 
-    ascii_char = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+    # ascii_char = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
     ascii_char = "11111111111111111111111111111111111111111111111111111111111111111110000"
 
     # 像素映射到字符
@@ -69,7 +69,6 @@ class V2Char(CharFrame):
 
     charVideo = []
     timeInterval = 0.033
-    # atmega8a_
 
     def __init__(self, path):
         if path.endswith('txt'):
@@ -88,9 +87,9 @@ class V2Char(CharFrame):
         for i in range(nf):
             rawFrame = cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2GRAY)
             frame = self.convert(rawFrame, os.get_terminal_size(), fill=True)
-            if i % 30 ==0:
+            if i % 15 ==0:
                 self.charVideo.append(frame)
-            if i > nf /10:
+            if i > nf /5:
                 break
         cap.release()
 
@@ -195,4 +194,4 @@ if __name__ == '__main__':
     v2char = V2Char(args.file)
     if args.export:
         v2char.export(args.export)
-    v2char.play()
+    # v2char.play()

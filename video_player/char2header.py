@@ -32,12 +32,16 @@ header_end = '''
 with open('charvideo.txt', 'r', encoding='utf-8') as char_file:
     with open('video_context.h', 'w', encoding='utf-8') as header_file:
         header_file.write(header_begin)
-        header_file.write('unsigned char video_context[][64] = {\n')
+        header_file.write(
+            'const unsigned char video_context[][64] PROGMEM = {\n')
         line = char_file.readline()
         count = 0
         while line:
             print('line %s' % count)
             count += 1
+            if count <= 3:
+                line = char_file.readline()
+                continue
             grid_array = frame2array(line)
             header_file.write('    {')
             context_to_write = ''
