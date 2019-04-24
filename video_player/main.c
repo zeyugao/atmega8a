@@ -11,25 +11,42 @@
 
 int video_frame_len = sizeof(video_context) / sizeof(unsigned char);
 
+unsigned char frame[70];
 int main() {
 	I2C_LCD1602_Init();
 
-	video_frame_len /= 64;
 	while (1) {
-		for (int i = 0; i < video_frame_len; i++) {
-			const unsigned char *ptr = (const unsigned char *)&video_context[i];
+		const unsigned char *ptr = video_context;
+
+		unsigned char c = pgm_read_byte(ptr++);
+		while (c != 127) { // End of content
+			unsigned char pos = 0;
+			while (c != 126) { // End of frame
+				if (c <= 31)
+					frame[pos++] = c;
+				else if (c <= 33)
+					for (unsigned char i = 0; i < 8; i++)
+						frame[pos++] = (c == 32 ? 0 : 31);
+				else if (c <= 35)
+					for (unsigned char i = 0; i < 4; i++)
+						frame[pos++] = (c == 34 ? 0 : 31);
+				else if (c <= 36 + 31)
+					for (unsigned char i = 0; i < 3; i++)
+						frame[pos++] = c - 36;
+				else
+					for (unsigned char i = 0; i < 2; i++)
+						frame[pos++] = c - 36 - 32;
+				c = pgm_read_byte(ptr++);
+			}
 
 			for (unsigned char r = 0; r < 2; r++) {
 				for (unsigned char c = 0; c < 4; c++) {
-					unsigned char pixel[8];
-					for (unsigned char p = 0; p < 8; p++) {
-						pixel[p] = pgm_read_byte(ptr++);
-					}
-					I2C_LCD1602_CreateChar(r * 4 + c, pixel);
+					I2C_LCD1602_CreateChar(r * 4 + c, frame + r * 32 + c * 8);
 					I2C_LCD1602_WriteChar(r, c, r * 4 + c);
 				}
 			}
 			_delay_ms(405);
+			c = pgm_read_byte(ptr++);
 		}
 	}
 	return 0;

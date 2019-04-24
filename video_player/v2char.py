@@ -90,9 +90,9 @@ class V2Char(CharFrame):
             frame = self.convert(rawFrame, os.get_terminal_size(), fill=True)
             if i % 15 == 0:
                 c += 1
-                print(c)
+                print('frame:', c)
                 self.charVideo.append(frame)
-            if i > nf/4:
+            if i > 2*nf/3:
                 break
         cap.release()
 
