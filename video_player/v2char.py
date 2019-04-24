@@ -11,7 +11,7 @@ os.get_terminal_size = lambda: (20, 16)
 class CharFrame:
 
     # ascii_char = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
-    ascii_char = "11111111111111111111111111111111111111111111111111111111111111111111100"
+    ascii_char = "11111111111111111111111111111111111111111111111111111111111111111110000"
 
     # 像素映射到字符
     def pixelToChar(self, luminance):
