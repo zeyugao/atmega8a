@@ -79,7 +79,7 @@ with open('charvideo.txt', 'r', encoding='utf-8') as char_file:
             data = compress(data)
             for a in data:
                 context_to_write += str(a) + ', '
-            context_to_write += '126'
+            context_to_write = context_to_write[:-2]
             header_file.write(context_to_write)
             line = char_file.readline()
             if line:

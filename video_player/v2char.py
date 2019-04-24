@@ -11,7 +11,7 @@ os.get_terminal_size = lambda: (20, 16)
 class CharFrame:
 
     # ascii_char = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
-    ascii_char = "11111111111111111111111111111111111111111111111111111111111111111110000"
+    ascii_char = "11111111111111111111111111111111111111111111111111111111111111111111100"
 
     # 像素映射到字符
     def pixelToChar(self, luminance):
@@ -88,11 +88,13 @@ class V2Char(CharFrame):
         for i in range(nf):
             rawFrame = cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2GRAY)
             frame = self.convert(rawFrame, os.get_terminal_size(), fill=True)
-            if i % 15 == 0:
+
+            # Optimized for bad apple
+            if i % 20 == 0:
                 c += 1
                 print('frame:', c)
                 self.charVideo.append(frame)
-            if i > 2*nf/3:
+            if i > nf:
                 break
         cap.release()
 

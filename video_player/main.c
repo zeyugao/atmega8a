@@ -9,8 +9,6 @@
 #include "../module/i2c_lcd1602.h"
 #include "video_context.h"
 
-int video_frame_len = sizeof(video_context) / sizeof(unsigned char);
-
 unsigned char frame[70];
 int main() {
 	I2C_LCD1602_Init();
@@ -21,7 +19,7 @@ int main() {
 		unsigned char c = pgm_read_byte(ptr++);
 		while (c != 127) { // End of content
 			unsigned char pos = 0;
-			while (c != 126) { // End of frame
+			while (pos != 64) { // End of frame
 				if (c <= 31)
 					frame[pos++] = c;
 				else if (c <= 33)
@@ -46,7 +44,6 @@ int main() {
 				}
 			}
 			_delay_ms(405);
-			c = pgm_read_byte(ptr++);
 		}
 	}
 	return 0;
