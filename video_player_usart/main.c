@@ -37,7 +37,6 @@ int main() {
 			else
 				for (unsigned char i = 0; i < 2; i++)
 					frame[count++] = read_data - 36 - 32;
-			usart_send(127);
 		}
 		for (unsigned char r = 0; r < 2; r++) {
 			for (unsigned char c = 0; c < 4; c++) {
@@ -45,7 +44,7 @@ int main() {
 				I2C_LCD1602_WriteChar(r, c, r * 4 + c);
 			}
 		}
-		//_delay_ms(1);
+		usart_send(0);
 	}
 exit:
 	while (1) {

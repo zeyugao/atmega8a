@@ -9,6 +9,8 @@
 #include <iostream>
 #include <cstdio>
 #include <fstream>
+#include <string>
+#include <sstream>
 
 #include "../module/serial_port.h"
 
@@ -31,14 +33,19 @@ int wmain() {
 	ifstream in;
 	in.open("video_context.txt", std::ios_base::in);
 	int data;
-	while (in.peek() != EOF) {
-		in >> data;
-		//cout << data << endl;
-		unsigned char payload[] = { (unsigned char)data };
-		serial_port.WriteData(payload, 1);
+	int count = 0;
+	string line;
+	while (std::getline(in, line)) {
+		istringstream iss(line);
+		while (iss >> data) {
+			//cout << data << endl;
+			unsigned char payload[] = { (unsigned char)data };
+			serial_port.WriteData(payload, 1);
+		}
 		char read_data;
 		serial_port.ReadChar(read_data);
-		//cout << (int)read_data << endl;
+		cout << "frame: " << count << ", result: " << (int)read_data << endl;
+		count++;
 	}
 
 	return 0;
