@@ -5,3 +5,6 @@
 video_player/video_context.h
 video_player/sample.mp4
 video_player/charvideo.txt
+local/video_player/charvideo.txt
+*.exe
+local/video_player/video_context.txt
