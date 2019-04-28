@@ -88,10 +88,10 @@ class V2Char(CharFrame):
         for i in range(nf):
             rawFrame = cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2GRAY)
             frame = self.convert(rawFrame, os.get_terminal_size(), fill=True)
-            if i % 3 == 0:
-                c += 1
-                print('frame:', c)
-                self.charVideo.append(frame)
+            # if i % 3 == 0:
+            c += 1
+            print('frame:', c)
+            self.charVideo.append(frame)
         cap.release()
 
     def export(self, filepath):

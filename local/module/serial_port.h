@@ -1,22 +1,22 @@
 
-#ifndef SERIALPORT_H_  
-#define SERIALPORT_H_  
- 
-#include <Windows.h>  
- 
+#ifndef SERIALPORT_H_
+#define SERIALPORT_H_
+
+#include <Windows.h>
+
 /** 串口通信类
 *
 *  本类实现了对串口的基本操作
 *  例如监听发到指定串口的数据、发送指定数据到串口
 */
-class CSerialPort
-{
+class SerialPort {
 public:
-	CSerialPort(void);
-	~CSerialPort(void);
- 
+	SerialPort(void);
+	~SerialPort(void);
+
 public:
- 
+	void send_with_verify(unsigned char* data, int len, int retry_times = 3);
+
 	/** 初始化串口函数
 	*
 	*  @param:  UINT portNo 串口编号,默认值为1,即COM1,注意,尽量不要大于9
@@ -31,8 +31,8 @@ public:
 	*           /n本串口类析构时会自动关闭串口,无需额外执行关闭串口
 	*  @see:
 	*/
-	bool InitPort(UINT  portNo = 1, UINT  baud = CBR_9600, char  parity = 'N', UINT  databits = 8, UINT  stopsbits = 1, DWORD dwCommEvents = EV_RXCHAR);
- 
+	bool InitPort(UINT portNo = 1, UINT baud = CBR_9600, char parity = 'N', UINT databits = 8, UINT stopsbits = 1, DWORD dwCommEvents = EV_RXCHAR);
+
 	/** 串口初始化函数
 	*
 	*  本函数提供直接根据DCB参数设置串口参数
@@ -42,8 +42,8 @@ public:
 	*  @note:   本函数提供用户自定义地串口初始化参数
 	*  @see:
 	*/
-	bool InitPort(UINT  portNo, const LPDCB& plDCB);
- 
+	bool InitPort(UINT portNo, const LPDCB& plDCB);
+
 	/** 开启监听线程
 	*
 	*  本监听线程完成对串口数据的监听,并将接收到的数据打印到屏幕输出
@@ -52,7 +52,7 @@ public:
 	*  @see:
 	*/
 	bool OpenListenThread();
- 
+
 	/** 关闭监听线程
 	*
 	*
@@ -61,7 +61,7 @@ public:
 	*  @see:
 	*/
 	bool CloseListenTread();
- 
+
 	/** 向串口写数据
 	*
 	*  将缓冲区中的数据写入到串口
@@ -72,7 +72,7 @@ public:
 	*  @see:
 	*/
 	bool WriteData(unsigned char* pData, unsigned int length);
- 
+
 	/** 获取串口缓冲区中的字节数
 	*
 	*
@@ -81,7 +81,7 @@ public:
 	*  @see:
 	*/
 	UINT GetBytesInCOM();
- 
+
 	/** 读取串口接收缓冲区中一个字节的数据
 	*
 	*
@@ -90,10 +90,9 @@ public:
 	*  @note:
 	*  @see:
 	*/
-	bool ReadChar(char &cRecved);
- 
+	bool ReadChar(char& cRecved);
+
 private:
- 
 	/** 打开串口
 	*
 	*
@@ -102,8 +101,8 @@ private:
 	*  @note:
 	*  @see:
 	*/
-	bool openPort(UINT  portNo);
- 
+	bool OpenPort(UINT portNo);
+
 	/** 关闭串口
 	*
 	*
@@ -112,7 +111,7 @@ private:
 	*  @see:
 	*/
 	void ClosePort();
- 
+
 	/** 串口监听线程
 	*
 	*  监听来自串口的数据和信息
@@ -122,21 +121,19 @@ private:
 	*  @see:
 	*/
 	static UINT WINAPI ListenThread(void* pParam);
- 
+
 private:
- 
 	/** 串口句柄 */
-	HANDLE  m_hComm;
- 
+	HANDLE m_hComm;
+
 	/** 线程退出标志变量 */
 	static bool s_bExit;
- 
+
 	/** 线程句柄 */
-	volatile HANDLE    m_hListenThread;
- 
+	volatile HANDLE m_hListenThread;
+
 	/** 同步互斥,临界区保护 */
-	CRITICAL_SECTION   m_csCommunicationSync;       //!< 互斥操作串口  
- 
+	CRITICAL_SECTION m_csCommunicationSync; //!< 互斥操作串口
 };
- 
-#endif //SERIALPORT_H_ 
+
+#endif //SERIALPORT_H_

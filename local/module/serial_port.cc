@@ -4,11 +4,32 @@
 #include <iostream>
 
 /** 线程退出标志 */
-bool CSerialPort::s_bExit = false;
+bool SerialPort::s_bExit = false;
 /** 当串口无数据时,sleep至下次查询间隔的时间,单位:秒 */
 const UINT SLEEP_TIME_INTERVAL = 5;
 
-CSerialPort::CSerialPort(void) :
+void SerialPort::send_with_verify(unsigned char* data, int len, int retry_times = 3) {
+	bool success = false;
+	int parity = 0;
+	for (int i = 0; i < len; i++) {
+		parity += data[i];
+	}
+	parity %= 10;
+	unsigned char parity_payload[] = { (unsigned char)parity };
+	char ret;
+	while (!success && retry_times) {
+		WriteData(data, len);
+		WriteData(parity_payload, 1);
+		ReadChar(ret);
+		success = !ret; // 0 stands for success
+		retry_times--;
+	}
+	if (!success && !retry_times) {
+		std::cout << "send failed" << std::endl;
+	}
+}
+
+SerialPort::SerialPort(void) :
 	m_hListenThread(INVALID_HANDLE_VALUE) {
 	m_hComm = INVALID_HANDLE_VALUE;
 	m_hListenThread = INVALID_HANDLE_VALUE;
@@ -16,13 +37,13 @@ CSerialPort::CSerialPort(void) :
 	InitializeCriticalSection(&m_csCommunicationSync);
 }
 
-CSerialPort::~CSerialPort(void) {
+SerialPort::~SerialPort(void) {
 	CloseListenTread();
 	ClosePort();
 	DeleteCriticalSection(&m_csCommunicationSync);
 }
 
-bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/, char parity /*= 'N'*/,
+bool SerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/, char parity /*= 'N'*/,
   UINT databits /*= 8*/, UINT stopsbits /*= 1*/, DWORD dwCommEvents /*= EV_RXCHAR*/) {
 
 	/** 临时变量,将制定参数转化为字符串形式,以构造DCB结构 */
@@ -30,7 +51,7 @@ bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/, char p
 	sprintf_s(szDCBparam, "baud=%d parity=%c data=%d stop=%d", baud, parity, databits, stopsbits);
 
 	/** 打开指定串口,该函数内部已经有临界区保护,上面请不要加保护 */
-	if (!openPort(portNo)) {
+	if (!OpenPort(portNo)) {
 		return false;
 	}
 
@@ -91,9 +112,9 @@ bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/, char p
 	return bIsSuccess == TRUE;
 }
 
-bool CSerialPort::InitPort(UINT portNo, const LPDCB& plDCB) {
+bool SerialPort::InitPort(UINT portNo, const LPDCB& plDCB) {
 	/** 打开指定串口,该函数内部已经有临界区保护,上面请不要加保护 */
-	if (!openPort(portNo)) {
+	if (!OpenPort(portNo)) {
 		return false;
 	}
 
@@ -114,7 +135,7 @@ bool CSerialPort::InitPort(UINT portNo, const LPDCB& plDCB) {
 	return true;
 }
 
-void CSerialPort::ClosePort() {
+void SerialPort::ClosePort() {
 	/** 如果有串口被打开，关闭它 */
 	if (m_hComm != INVALID_HANDLE_VALUE) {
 		CloseHandle(m_hComm);
@@ -122,7 +143,7 @@ void CSerialPort::ClosePort() {
 	}
 }
 
-bool CSerialPort::openPort(UINT portNo) {
+bool SerialPort::OpenPort(UINT portNo) {
 	/** 进入临界段 */
 	EnterCriticalSection(&m_csCommunicationSync);
 
@@ -151,7 +172,7 @@ bool CSerialPort::openPort(UINT portNo) {
 	return true;
 }
 
-bool CSerialPort::OpenListenThread() {
+bool SerialPort::OpenListenThread() {
 	/** 检测线程是否已经开启了 */
 	if (m_hListenThread != INVALID_HANDLE_VALUE) {
 		/** 线程已经开启 */
@@ -174,7 +195,7 @@ bool CSerialPort::OpenListenThread() {
 	return true;
 }
 
-bool CSerialPort::CloseListenTread() {
+bool SerialPort::CloseListenTread() {
 	if (m_hListenThread != INVALID_HANDLE_VALUE) {
 		/** 通知线程退出 */
 		s_bExit = true;
@@ -189,7 +210,7 @@ bool CSerialPort::CloseListenTread() {
 	return true;
 }
 
-UINT CSerialPort::GetBytesInCOM() {
+UINT SerialPort::GetBytesInCOM() {
 	DWORD dwError = 0; /** 错误码 */
 	COMSTAT comstat;   /** COMSTAT结构体,记录通信设备的状态信息 */
 	memset(&comstat, 0, sizeof(COMSTAT));
@@ -203,9 +224,9 @@ UINT CSerialPort::GetBytesInCOM() {
 	return BytesInQue;
 }
 
-UINT WINAPI CSerialPort::ListenThread(void* pParam) {
+UINT WINAPI SerialPort::ListenThread(void* pParam) {
 	/** 得到本类的指针 */
-	CSerialPort* pSerialPort = reinterpret_cast<CSerialPort*>(pParam);
+	SerialPort* pSerialPort = reinterpret_cast<SerialPort*>(pParam);
 
 	// 线程循环,轮询方式读取串口数据
 	while (!pSerialPort->s_bExit) {
@@ -230,7 +251,7 @@ UINT WINAPI CSerialPort::ListenThread(void* pParam) {
 	return 0;
 }
 
-bool CSerialPort::ReadChar(char& cRecved) {
+bool SerialPort::ReadChar(char& cRecved) {
 	BOOL bResult = TRUE;
 	DWORD BytesRead = 0;
 	if (m_hComm == INVALID_HANDLE_VALUE) {
@@ -259,7 +280,7 @@ bool CSerialPort::ReadChar(char& cRecved) {
 	return (BytesRead == 1);
 }
 
-bool CSerialPort::WriteData(unsigned char* pData, unsigned int length) {
+bool SerialPort::WriteData(unsigned char* pData, unsigned int length) {
 	BOOL bResult = TRUE;
 	DWORD BytesToSend = 0;
 	if (m_hComm == INVALID_HANDLE_VALUE) {
