@@ -14,21 +14,21 @@ unsigned int read_hc_sr04() {
 	tmp_DDRB = DDRB;
 	cli();
 
-	DDRB = (1 << 1);
+	DDRB = (1 << DDB6);
 	PORTB |= (1 << PORTB6);
 	_delay_us(20);
-	PORTB &= !(1 << PORTB6);
+	PORTB &= ~(1 << PORTB6);
 
 	TCCR1B = 0x00;
 	TCNT1 = 0x00;
 	TCCR1A = 0x00;
-	while (!(PINB & (1<<PORTB7)))
+	while (!(PINB & (1 << PORTB7)))
 		;
 	TCCR1B = 0x01;
-	while (PINB & (1<<PORTB7))
+	while (PINB & (1 << PORTB7))
 		;
 
-	TCCR1B = 0x00;	
+	TCCR1B = 0x00;
 	distance = TCNT1;
 
 	sei();
