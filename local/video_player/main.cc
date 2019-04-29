@@ -20,7 +20,7 @@ int wmain(int argc, const char *argv[]) {
 	SerialPort serial_port;
 
 	UINT port = 4;
-	UINT baud = CBR_4800;
+	UINT baud = CBR_9600;
 
 	if (argc == 2) {
 		port = atoi(argv[1]);
@@ -40,15 +40,15 @@ int wmain(int argc, const char *argv[]) {
 	string line;
 	while (std::getline(in, line)) {
 		istringstream iss(line);
-		
+
 		int len = 0;
 		unsigned char payload[64];
 		while (iss >> data) {
 			payload[len++] = (unsigned char)data;
 		}
 		cout << "send payload len: " << len << endl;
+		//serial_port.send_with_verify(payload, len);
 		serial_port.WriteData(payload, len);
-
 		char read_data;
 		serial_port.ReadChar(read_data);
 		cout << "frame: " << count << ", result: " << (int)read_data << endl;
