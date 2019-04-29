@@ -1,5 +1,6 @@
-
 #include "dht11.h"
+
+#include <util/delay.h>
 #include <avr/io.h>
 #ifndef BUILD
 #include <avr/iom8a.h>
@@ -9,12 +10,7 @@
 #define BYTE unsigned char
 #endif
 
-BYTE dht11_data[4];
-
-BYTE *get_dht11_data() {
-	DHT11_run();
-	return dht11_data;
-}
+void read_dht11(unsigned char *dht11_data);
 
 BYTE ByteReadDHT11() {
 	BYTE pw_counter, i, bytedata = 0, onebit;
@@ -44,7 +40,7 @@ BYTE ByteReadDHT11() {
 	return bytedata;
 }
 
-void DHT11_run(void) {
+void read_dht11(unsigned char *dht11_data) {
 	BYTE pw_counter;
 	BYTE humidity, H_num;
 	BYTE temperature, T_num;
@@ -63,7 +59,7 @@ void DHT11_run(void) {
 	DDRB &= ~(1 << PORTB0);
 
 	_delay_us(40);
-	if (PINC & 0x08)
+	if (PINB & (1 << PORTB0))
 		return;
 
 	pw_counter = 1;
