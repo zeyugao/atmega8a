@@ -1,5 +1,10 @@
 #include "usart.h"
 
+#include <avr/io.h>
+#ifndef BUILD
+#include <avr/iom8a.h>
+#endif
+
 void usart_init(unsigned int ubrr_val) {
 	UBRRH = (unsigned char)(ubrr_val >> 8);
 	UBRRL = (unsigned char)(ubrr_val);
@@ -31,4 +36,9 @@ void usart_send_string(char* str) {
 		usart_send(*str);
 		str++;
 	}
+}
+
+void usart_send_array(unsigned char* data, int len) {
+	for (int i = 0; i < len; i++)
+		usart_send(data[i]);
 }
