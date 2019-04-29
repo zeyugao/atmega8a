@@ -1,9 +1,9 @@
 #ifndef F_CPU
-#define F_CPU 1000000L
+#define F_CPU 8000000L
 #endif
 
 #include "../module/hc_sr04.h"
-#include "../module/atmega8a_i2c_lcd1602.h"
+#include "../module/i2c_lcd1602.h"
 #include "../module/display.h"
 
 int main() {

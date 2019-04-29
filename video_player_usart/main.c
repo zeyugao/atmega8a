@@ -1,5 +1,5 @@
 
-#define F_CPU 1000000UL
+#define F_CPU 8000000UL
 
 #include <util/delay.h>
 #include <stdlib.h>
@@ -19,10 +19,6 @@ int main() {
 			unsigned char read_data = usart_receive();
 			if (read_data == 127)
 				goto exit;
-			//char buffer[4];
-			//itoa((int)read_data, buffer, 4);
-			//I2C_LCD1602_WriteString(0, 6, "   ");
-			//I2C_LCD1602_WriteString(0, 6, buffer);
 			if (read_data <= 31)
 				frame[count++] = read_data;
 			else if (read_data <= 33)
