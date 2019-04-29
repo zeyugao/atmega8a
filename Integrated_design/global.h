@@ -11,4 +11,12 @@
 
 char CURRENT_PAGE = HOME;
 
+enum {
+	buzzer = 0,
+	flicker,
+	none
+};
+
+unsigned char BOSS_MODE_ALERT_TYPE = none;
+
 #endif // CONST_H

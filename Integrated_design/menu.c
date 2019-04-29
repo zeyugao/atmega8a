@@ -29,9 +29,7 @@ void menu() {
 	unsigned char key;
 	while (!__q) {
 		key = get_click();
-		if (key == 16)
-			continue;		 // No key inputed
-		else if (key == 7) { // Up
+		if (key == 7) { // Up
 			current_menu--;
 			current_menu = (current_menu + menu_len) % menu_len;
 		}

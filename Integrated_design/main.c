@@ -1,6 +1,7 @@
 #include "global.h"
 #include "menu.h"
 #include "snake.h"
+#include "boss_mode.h"
 #include "hc_sr04.h"
 
 int main() {
@@ -20,6 +21,9 @@ int main() {
 				break;
 			case DHT11:
 				dht11();
+				break;
+			case BOSS_MODE:
+				boss_mode();
 				break;
 			default:
 				break;
