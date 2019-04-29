@@ -29,7 +29,7 @@ include start,
 but exclude end
 */
 unsigned int random(unsigned int start, unsigned char end) {
-	return start < end ? (rand() + start) % (end - start) : start;
+	return start < end ? (rand() % (end - start)) + start: start;
 }
 
 void gen_food() {
