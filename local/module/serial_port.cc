@@ -8,27 +8,6 @@ bool SerialPort::s_bExit = false;
 /** 当串口无数据时,sleep至下次查询间隔的时间,单位:秒 */
 const UINT SLEEP_TIME_INTERVAL = 5;
 
-void SerialPort::send_with_verify(unsigned char* data, int len, int retry_times = 3) {
-	bool success = false;
-	int parity = 0;
-	for (int i = 0; i < len; i++) {
-		parity += data[i];
-	}
-	parity %= 10;
-	unsigned char parity_payload[] = { (unsigned char)parity };
-	char ret;
-	while (!success && retry_times) {
-		WriteData(data, len);
-		WriteData(parity_payload, 1);
-		ReadChar(ret);
-		success = !ret; // 0 stands for success
-		retry_times--;
-	}
-	if (!success && !retry_times) {
-		std::cout << "send failed" << std::endl;
-	}
-}
-
 SerialPort::SerialPort(void) :
 	m_hListenThread(INVALID_HANDLE_VALUE) {
 	m_hComm = INVALID_HANDLE_VALUE;

@@ -15,8 +15,6 @@ public:
 	~SerialPort(void);
 
 public:
-	void send_with_verify(unsigned char* data, int len, int retry_times = 3);
-
 	/** 初始化串口函数
 	*
 	*  @param:  UINT portNo 串口编号,默认值为1,即COM1,注意,尽量不要大于9
