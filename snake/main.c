@@ -2,7 +2,6 @@
 #define F_CPU 8000000UL
 #endif
 
-<<<<<<< HEAD
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <avr/io.h>
@@ -12,15 +11,6 @@
 #include <string.h>
 #include <avr/eeprom.h>
 #include <stdlib.h>
-=======
-/*
-include start, 
-but exclude end
-*/
-unsigned int random(unsigned int start, unsigned char end) {
-	return start < end ? (rand() % (end - start)) + start: start;
-}
->>>>>>> df5a95e94e54f83ce503fb5ea832f627a18c1033
 
 #include "../module/i2c_lcd1602.h"
 #include "snake.h"
@@ -76,6 +66,13 @@ int main() {
 
 	snake(); // enter loop
 			 // once exit the loop, it means the player failed
+
+	for (unsigned char i = 0; i < 7; i++) {
+		for (unsigned char j = 0; j < 7; j++) {
+			data[i][j].on = (i+j)&1;
+			data[i][j].percent = (i + j) % 4;
+		}
+	}
 
 	while (1) {
 		I2C_LCD1602_WriteString(0, 0, "Game over");
