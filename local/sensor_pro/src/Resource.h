@@ -1,0 +1,3 @@
+#define IDI_APPICON 101
+
+#define IDB_READ_BUTTON (WM_USER + 1)

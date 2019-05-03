@@ -1,0 +1,90 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM                                          # LLVM, Google, Chromium, Mozilla, WebKit
+AccessModifierOffset: -4
+AlignAfterOpenBracket: false
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlines: Left
+AlignEscapedNewlinesLeft: true
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterDefinitionReturnType: false
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: true
+BinPackArguments: false
+BinPackParameters: true
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: false
+  AfterUnion: false
+  AfterExternBlock: false
+  BeforeCatch: true
+  BeforeElse: true
+  SplitEmptyNamespace: false
+  SplitEmptyRecord: false
+  SplitEmptyFunction: false
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: AfterColon
+# BreakInheritanceList: AfterColon
+ColumnLimit: 0
+CompactNamespaces: false
+# CommentPragmas
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 2
+
+# 去除C++11的列表初始化的大括号{后和}前的空格 
+Cpp11BracedListStyle: false
+DerivePointerAlignment: true
+DisableFormat: false
+ExperimentalAutoDetectBinPacking: true
+# ForEachMacros
+IndentCaseLabels: true
+IndentWidth: 4
+IndentWrappedFunctionNames: true
+KeepEmptyLinesAtTheStartOfBlocks: true
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+# ObjCSpaceAfterProperty
+# ObjCSpaceBeforeProtocolList
+#// PenaltyBreakBeforeFirstCallParameter
+#// PenaltyBreakComment
+#// PenaltyBreakFirstLessLess
+#// PenaltyBreakString
+#// PenaltyExcessCharacter
+#// PenaltyReturnTypeOnItsOwnLine: 
+PointerAlignment: Left
+SortIncludes: false
+SortUsingDeclarations: false
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+# SpaceBeforeCpp11BracedList: false
+# SpaceBeforeCtorInitializerColon: true
+# SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+# SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+Standard: Cpp11
+TabWidth: 4
+UseTab: Always
