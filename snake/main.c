@@ -1,124 +1,73 @@
-#include "snake.h"
-#include "../module/i2c_lcd1602.h"
-#include "../module/custom_char.h"
-#include "../module/adc.h"
-#include <stdlib.h>
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
+
+#include <avr/interrupt.h>
 #include <util/delay.h>
-#define UP 0
-#define DOWN 1
-#define LEFT 2
-#define RIGHT 3
+#include <avr/io.h>
+#ifndef BUILD
+#include <avr/iom8a.h>
+#endif
+#include <string.h>
+#include <avr/eeprom.h>
+#include <stdlib.h>
 
-#define MAP_X 7
-#define MAP_Y 7
-#define QUEUE_SIZE ((MAP_X) * (MAP_Y))
+#include "../module/i2c_lcd1602.h"
+#include "snake.h"
+#include "light.h"
 
-unsigned char delta_x[4] = { 0, 0, -1, 1 };
-unsigned char delta_y[4] = { -1, 1, 0, 0 };
-unsigned char snake_body_map[7][7];
-unsigned char food_x, food_y;
+#ifndef MY_TIME_STAMP
+#define MY_TIME_STAMP 197001010000
+#endif
 
-typedef struct {
-	unsigned int x, y;
-} Snake;
+#define START_NUM 225
+//unsigned char flash_count = 0;
 
-Snake *queue[QUEUE_SIZE] = { 0 };
+extern LightData data[7][7];
 
+ISR(TIMER0_OVF_vect) {
+	TCNT0 = START_NUM;
+	display();
+}
+
+char buffer[20];
+uint32_t t;
 /*
-include start, 
-but exclude end
+  Read random seed from eeprom and write a new random one.
 */
-unsigned int random(unsigned int start, unsigned char end) {
-	return start < end ? (rand() + start) % (end - start) : start;
-}
+void init_rand() {
+	uint32_t state;
 
-void gen_food() {
-	do {
-		food_x = random(0, MAP_X);
-		food_y = random(0, MAP_Y);
-	} while (snake_body_map[food_x][food_y]);
-}
+	static uint32_t EEMEM sstate;
 
-// TODO
-void display() {
-}
-
-// TODO
-unsigned char get_direction() {
-}
-
-int head = 0, tail = 0;
-void en_quene(Snake *p) {
-	queue[tail] = p;
-	tail = (tail + 1) % QUEUE_SIZE;
-}
-
-Snake *de_queue() {
-	//free(queue[head]);
-	int head_bak = head;
-	head = (head + 1) % QUEUE_SIZE;
-	return queue[head_bak];
-}
-
-unsigned char process_move(unsigned char direction) {
-	Snake *first = queue[(tail - 1 + QUEUE_SIZE) % QUEUE_SIZE];
-	if (first->x + delta_x[direction] == food_x && first->y + delta_y[direction] == food_y) {
-		Snake *new_part = (Snake *)malloc(sizeof(Snake));
-		new_part->x = first->x + delta_x[direction];
-		new_part->y = first->y + delta_y[direction];
-		snake_body_map[new_part->x][new_part->y] = 1;
-		en_quene(new_part);
-		gen_food();
-		return 0;
+	state = eeprom_read_dword(&sstate);
+	t = state;
+	if ((int)(t - 65535) == 0) {
+		state = (unsigned int)MY_TIME_STAMP;
 	}
-
-	Snake *last = de_queue();
-
-	snake_body_map[last->x][last->y] = 0;
-
-	last->x = first->x + delta_x[direction];
-	last->y = first->y + delta_x[direction];
-
-	if (snake_body_map[last->x][last->y]) {
-		return 0; // collision detected
-	}
-
-	snake_body_map[last->x][last->y] = 1;
-	en_quene(last);
-
-	return 1;
+	srand(state);
+	eeprom_write_dword(&sstate, rand());
 }
 
-void snake() {
-	unsigned char __q = 0;
-	unsigned char towards = UP, tmp_towards;
+int main() {
+	DDRB = 0xff;
+	DDRD = 0xff;
+	DDRC = 0;
+	init_rand();
+	I2C_LCD1602_Init();
 
-	adc_init(0);
-	unsigned char dh, dl;
-	read_adc(&dh, &dl);
-	srand((unsigned int)dh * (unsigned int)dl);
+	int cnt = 0;
 
-	Snake *part = (Snake *)malloc(sizeof(Snake));
-	part->x = random(0, MAP_X);
-	part->y = random(0, MAP_Y);
-	en_quene(part);
+	TCCR0 = 0x0;
+	TCNT0 = START_NUM; // start num
+	TIMSK = 0x01;
+	sei();
+	TCCR0 = 0x05;
 
-	gen_food();
+	snake(); // enter loop
+			 // once exit the loop, it means the player failed
 
-	unsigned char cnt = 0;
-	while (!__q) {
-		if (cnt >= 100) {
-			display();
-			cnt = 0;
-		}
-		towards = (tmp_towards = get_direction()) <= 3 ? tmp_towards : towards;
-		if (!process_move(towards)) {
-			// game over
-			__q = 1;
-		}
-
-		display();
-
-		_delay_ms(10);
+	while (1) {
+		I2C_LCD1602_WriteString(0, 0, "Game over");
 	}
 }
