@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <time.h>
 
 #include "../module/serial_port.h"
 
@@ -25,12 +26,13 @@ int wmain(int argc, const char *argv[]) {
 	if (argc == 2) {
 		port = atoi(argv[1]);
 	}
+	cout << "Trying to init on COM" << port << ", with baud " << baud << endl;
 	if (!serial_port.InitPort(port, baud)) {
-		cout << "can't init port on COM" << port << ", baud " << baud << endl;
+		cout << "Can't init on COM" << port << ", with baud " << baud << endl;
 		return 1;
 	}
 	else {
-		cout << "init success on COM" << port << ", baud " << baud << endl;
+		cout << "Initialization succeed on COM" << port << ", with baud " << baud << endl;
 	}
 
 	ifstream in;
@@ -38,6 +40,7 @@ int wmain(int argc, const char *argv[]) {
 	int data;
 	int count = 0;
 	string line;
+	clock_t start_time = clock();
 	while (std::getline(in, line)) {
 		istringstream iss(line);
 
@@ -46,13 +49,17 @@ int wmain(int argc, const char *argv[]) {
 		while (iss >> data) {
 			payload[len++] = (unsigned char)data;
 		}
-		cout << "send payload len: " << len << endl;
+		//cout << "send payload len: " << len << endl;
 		//serial_port.send_with_verify(payload, len);
 		serial_port.WriteData(payload, len);
 		char read_data;
 		serial_port.ReadChar(read_data);
 		cout << "frame: " << count << ", result: " << (int)read_data << endl;
 		count++;
+		while (clock() - start_time < 67) {
+			Sleep(1);
+		}
+		start_time += 66;
 	}
 
 	return 0;
