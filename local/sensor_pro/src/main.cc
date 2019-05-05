@@ -87,12 +87,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 					}
 					std::cout << (int)data[3] << (int)data[2] << " " << (int)data[1] << (int)data[0] << std::endl;
 					wchar_t text[10];
-					
-					if(data[0]+data[1]+data[2]+data[3]){
-					wsprintf(text, TEXT("%d%d"), (int)data[1], (int)data[0]);
-					SendMessage(text_humidity, WM_SETTEXT, 0, (LPARAM)text);
-					wsprintf(text, TEXT("%d%d"), (int)data[3], (int)data[2]);
-					SendMessage(text_temperature, WM_SETTEXT, 0, (LPARAM)text);
+
+					if (data[0] + data[1] + data[2] + data[3]) {
+						wsprintf(text, TEXT("%d%d"), (int)data[1], (int)data[0]);
+						SendMessage(text_humidity, WM_SETTEXT, 0, (LPARAM)text);
+						wsprintf(text, TEXT("%d%d"), (int)data[3], (int)data[2]);
+						SendMessage(text_temperature, WM_SETTEXT, 0, (LPARAM)text);
 					}
 					// now the dht11
 					query_payload[0] = 2;
@@ -104,15 +104,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 					v = ((double)((unsigned char)data[0] << 8) + (double)(unsigned char)data[1]) * 5 / 1024;
 					std::cout << v << std::endl;
 
-					swprintf(text, TEXT("%f"), v);
+					swprintf(text, TEXT("%lf"), v);
 
 					SendMessage(text_light, WM_SETTEXT, 0, (LPARAM)text);
+
 					break;
 			}
 			break;
 		case WM_CREATE:
 			hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
-			Read_Button = CreateWindow(TEXT("BUTTON"), TEXT("读取"), WS_CHILD | WS_VISIBLE, 50, 250, 100, 30, hWnd, (HMENU)IDB_READ_BUTTON, 0, 0);
+			Read_Button = CreateWindow(TEXT("BUTTON"), TEXT("读取"), WS_CHILD | WS_VISIBLE, 280, 250, 100, 30, hWnd, (HMENU)IDB_READ_BUTTON, 0, 0);
 			HWND static_light, static_temperature, static_humidity;
 
 			static_light = CreateWindow(TEXT("static"), TEXT("当前DHT11电压"), WS_CHILD | WS_VISIBLE | SS_LEFT, 50, 50, 150, 30, hWnd, (HMENU)1, 0, 0);
@@ -120,7 +121,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			static_humidity = CreateWindow(TEXT("static"), TEXT("当前湿度"), WS_CHILD | WS_VISIBLE | SS_LEFT, 50, 150, 150, 30, hWnd, (HMENU)3, 0, 0);
 
 			text_light = CreateWindow(TEXT("static"), TEXT("0"), WS_CHILD | WS_VISIBLE | SS_LEFT, 250, 50, 150, 30, hWnd, (HMENU)4, 0, 0);
-			text_temperature = CreateWindow(TEXT("static"), TEXT("0"), WS_CHILD | WS_VISIBLE | SS_LEFT, 250, 100, 150, 30, hWnd, (HMENU)5, 0, 0);			
+			text_temperature = CreateWindow(TEXT("static"), TEXT("0"), WS_CHILD | WS_VISIBLE | SS_LEFT, 250, 100, 150, 30, hWnd, (HMENU)5, 0, 0);
 			text_humidity = CreateWindow(TEXT("static"), TEXT("0"), WS_CHILD | WS_VISIBLE | SS_LEFT, 250, 150, 150, 30, hWnd, (HMENU)6, 0, 0);
 
 			hdc = GetDC(NULL);

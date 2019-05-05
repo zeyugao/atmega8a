@@ -3,7 +3,7 @@ C_SOURCES :=
 
 C_SOURCES += \
 ./main.c \
-./usart.c \
+../module/usart.c \
 ../module/i2c_lcd1602.c \
 ../module/i2c_pcf8574t.c
 
